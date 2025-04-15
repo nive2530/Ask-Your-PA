@@ -62,7 +62,7 @@ User Input (Query) ──▶ Embed via OpenAI ──▶ Pinecone (Top-k Search)
 
 ```bash
 pip install -r requirements.txt
-python test.py
+python ask_your_pa.py
 ```
 > This will launch both the FastAPI backend and Streamlit frontend.
 
@@ -75,7 +75,7 @@ Make sure to configure your environment variables:
 ## 📂 File Structure
 ```
 Ask-Your-PA/
-├── test.py                # Main app file (FastAPI + Streamlit)
+├── ask_your_pa.py                # Main app file (FastAPI + Streamlit)
 ├── users.json             # Local user persistence file
 ├── requirements.txt       # Dependency list
 ├── README.md              # Project documentation

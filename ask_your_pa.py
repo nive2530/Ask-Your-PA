@@ -1,5 +1,7 @@
 # Integrated FastAPI + Streamlit App with JSON-based User Persistence
 
+from dotenv import load_dotenv
+load_dotenv()
 import uuid
 import os
 import json
@@ -15,14 +17,17 @@ import docx
 import openai
 
 # --------------------------- CONFIGURATION ---------------------------
+# Configuration constants including chunking parameters for text processing,
+# OpenAI API settings, and user data file location.
 CHUNK_SIZE = 1000
 CHUNK_OVERLAP = 200
-OPENAI_API_KEY = ""  # Replace with your key
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 embedding_model = "text-embedding-3-small"
 llm_model = "gpt-3.5-turbo"
 USER_FILE = "users.json"
 
 # --------------------------- FASTAPI SETUP ---------------------------
+# Initializes FastAPI app with CORS middleware and configures Pinecone vector DB index.
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
@@ -32,7 +37,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-pc = Pinecone(api_key="")
+pc = Pinecone(api_key=os.getenv("PINECONE_API_KEY"))
 index_name = "user-profile-index"
 embedding_dim = 1536
 
@@ -49,6 +54,7 @@ index = pc.Index(index_name)
 users_db = {}
 
 # --------------------------- PERSISTENCE HELPERS ---------------------------
+# Helper functions to save and load user data to/from JSON file for persistence across sessions.
 def save_users_to_file():
     with open(USER_FILE, "w") as f:
         json.dump(users_db, f)
@@ -60,6 +66,7 @@ def load_users_from_file():
             users_db = json.load(f)
 
 # --------------------------- API ROUTES ---------------------------
+# FastAPI endpoints to handle user signup, login, appending info, and chat-based query resolution.
 @app.post("/signup")
 async def signup_user(
     first_name: str = Form(...),
@@ -152,6 +159,7 @@ async def chat_user_query(email: str = Form(...), query: str = Form(...)):
     return {"response": response.choices[0].message.content.strip()}
 
 # --------------------------- HELPERS ---------------------------
+# Utility functions for text extraction, chunking, and embedding generation.
 def extract_text(file: UploadFile) -> str:
     if file.filename.endswith(".txt"):
         return file.file.read().decode("utf-8", errors="ignore")
@@ -177,6 +185,7 @@ def get_openai_embeddings(chunks):
     return [r.embedding for r in response.data]
 
 # --------------------------- STREAMLIT UI ---------------------------
+# Streamlit-based frontend UI for user interaction - login, registration, adding info, and querying AI assistant.
 st.set_page_config(page_title="AI Assistant", layout="wide")
 
 def launch_streamlit():
@@ -313,6 +322,7 @@ def launch_streamlit():
                     st.error(f"Failed to process chat response: {e}")
 
 # --------------------------- MAIN ---------------------------
+# Entry point to start the FastAPI server in a background thread and launch the Streamlit frontend.
 def start_fastapi():
     uvicorn.run(app, host="127.0.0.1", port=8000)
 

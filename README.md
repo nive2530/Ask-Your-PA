@@ -58,17 +58,39 @@ User Input (Query) ──▶ Embed via OpenAI ──▶ Pinecone (Top-k Search)
 
 ---
 
-## 🚀 Running the App
+## 🚀 How to Run the Project
 
+### 1. Clone the repository
+```bash
+git clone https://github.com/yourusername/ask-your-pa.git
+cd ask-your-pa
+```
+
+### 2. Create a virtual environment
+```bash
+python -m venv venv
+source venv/bin/activate  # Windows: venv\Scripts\activate
+```
+
+### 3. Install dependencies
 ```bash
 pip install -r requirements.txt
+```
+
+### 4. Set environment variables
+
+Create a file named `.env` and paste your API keys:
+```
+OPENAI_API_KEY=your-openai-api-key
+PINECONE_API_KEY=your-pinecone-api-key
+```
+
+### 5. Run the application
+```bash
 python ask_your_pa.py
 ```
-> This will launch both the FastAPI backend and Streamlit frontend.
 
-Make sure to configure your environment variables:
-- `OPENAI_API_KEY`
-- `PINECONE_API_KEY`
+This will launch the FastAPI backend and Streamlit UI simultaneously.
 
 ---
 
